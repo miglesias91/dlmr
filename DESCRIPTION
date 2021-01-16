@@ -1,11 +1,18 @@
 Package: dlmr
-Type: Package
-Title: What the Package Does (Title Case)
+Title: Dicen Los Medios Para R
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: 
+    person(given = "Manuel",
+           family = "Iglesias",
+           role = c("aut", "cre"),
+           email = "visualizadordecontexto@gmail.com")
+Description: Mini-framework para consultar a la base de dlm.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports:
+    mongolite,
+    data.table,
+    stringi
