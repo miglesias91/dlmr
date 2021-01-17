@@ -1,4 +1,4 @@
 # dlmr
-### paquete R para hacer consultas a las noticias de 'dicenlosmedios'.
+### Paquete R para hacer consultas a la base de [dlm](https://twitter.com/dicenlosmedios).
 
-Wrapper sobre mongodb para **evitar** tirar consultas estilo mongo y **amenizar** el desarrollo.
+Wrapper sobre [mongolite](https://github.com/jeroen/mongolite) para **simplificar** las consultas.
