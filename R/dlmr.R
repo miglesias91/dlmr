@@ -1,7 +1,5 @@
-#' Conecta a la base y devuelve handler de la colección 
+#' Conecta a la base y mantiene abierta la sesión
 #'
-#' @param coleccion nombre coleccion
-#' @param db nombre db
 #' @param usuario nombre usuario
 #' @param password password usuario
 #' @param servidor ip servidor
@@ -9,23 +7,50 @@
 #' @param admindb admin donde esta guarda la info de loge
 #' @import mongolite
 #' @export
-conexion = function(coleccion, db, usuario, password, servidor = 'localhost', puerto = 27017, admindb = 'admin') {
+conectar = function(usuario, password, servidor = 'localhost', puerto = 27017, admindb = 'admin') {
+  
+  if(exists('conexion_dlmr')) {
+    stop('Ya existe una conexión abierta!')
+  }
   
   if (servidor == 'localhost' | servidor == '127.0.0.1') {
-    c = mongo(collection = coleccion, db = db)
-    return(c)
+    
+    tryCatch(
+      expr = {
+        cnoticias = mongo(collection = 'noticias', db = 'dlm')
+        cfrecuencias = mongo(collection = 'frecuencias', db = 'resultados')
+        
+        conexion = list(noticias = cnoticias, frecuencias = cfrecuencias)
+        assign('conexion_dlmr', conexion, .BaseNamespaceEnv)
+      },
+      error = function(e) {
+        stop(paste0('No se pudo conectar al servidor: ',e))
+      }
+    )
+    
+    return('Conexión OK!')
   }
   
   url_path = paste0('mongodb://',usuario,':',password,'@',servidor,':',puerto,'/?authSource=',admindb)
   
-  c = mongo(collection = coleccion, db = db, url = url_path)
+  tryCatch(
+    expr = {
+      cnoticias = mongo(collection = 'noticias', db = 'dlm', url = url_path)
+      cfrecuencias = mongo(collection = 'frecuencias', db = 'resultados', url = url_path)
+      
+      conexion = list(noticias = cnoticias, frecuencias = cfrecuencias)
+      assign('conexion_dlmr', conexion, .BaseNamespaceEnv)
+    },
+    error = function(e) {
+      stop(paste0('No se pudo conectar al servidor: ',e))
+    }
+  )
   
-  return(c)
+  return('Conexión OK!')
 }
 
 #' Busca 'personas', 'terminos' o 'verbos' en 'textos' o 'titulos' de la coleccion, filtrando segun algunos parametros.
 #'
-#' @param conexion conexion a la coleccion 'frecuencias' ya instanciada
 #' @param que qué buscar? 'personas', 'terminos' o 'verbos'
 #' @param donde dónde buscar? 'textos' o 'titulos'
 #' @param palabras palabras a buscar
@@ -39,10 +64,10 @@ conexion = function(coleccion, db, usuario, password, servidor = 'localhost', pu
 #' @import stringi
 #' @import data.table
 #' @export
-frecuencias = function(conexion, que, donde, palabras, desde = '0', hasta = '99999999', diarios = c(), categorias = c(), freq_min = 0, freq_max = 99999) {
+frecuencias = function(que, donde, palabras, desde = '0', hasta = '99999999', diarios = c(), categorias = c(), freq_min = 0, freq_max = 99999) {
   
-  if (class(conexion)[1] != 'mongo') {
-    stop('"conexion" no es una conexion de mongo.')
+  if(exists('conexion_dlmr') == F) {
+    stop(paste0('NO existe una conexión abierta! Para inicar conexión llamar a "conectar()"'))
   }
   
   if (!(que %in% c('personas', 'terminos', 'verbos'))) {
@@ -83,7 +108,7 @@ frecuencias = function(conexion, que, donde, palabras, desde = '0', hasta = '999
   
   query = paste0('[{', query_match,'}]')
   
-  resultado = conexion$aggregate(query)
+  resultado = conexion_dlmr$frecuencias$aggregate(query)
   
   if (nrow(resultado) == 0) return(0)
   
@@ -98,10 +123,8 @@ frecuencias = function(conexion, que, donde, palabras, desde = '0', hasta = '999
   return(dresultado)
 }
 
-
 #' Busca 'personas', 'terminos' o 'verbos' en 'textos' o 'titulos' de la coleccion, filtrando segun algunos parametros.
 #'
-#' @param conexion conexion a la coleccion 'frecuencias' ya instanciada
 #' @param que qué buscar? 'personas', 'terminos' o 'verbos'
 #' @param donde dónde buscar? 'textos' o 'titulos'
 #' @param fecha fecha a medir tendencia
@@ -112,10 +135,10 @@ frecuencias = function(conexion, que, donde, palabras, desde = '0', hasta = '999
 #' @import stringi
 #' @import data.table
 #' @export
-tendencias = function(conexion, que, donde, fecha, diarios = c(), categorias = c(), top = 10) {
+tendencias = function(que, donde, fecha, diarios = c(), categorias = c(), top = 10) {
   
-  if (class(conexion)[1] != 'mongo') {
-    stop('"conexion" no es una conexion de mongo.')
+  if(exists('conexion_dlmr') == F) {
+    stop(paste0('NO existe una conexión abierta! Para inicar conexión llamar a "conectar()"'))
   }
   
   if (!(que %in% c('personas', 'terminos', 'verbos'))) {
@@ -175,11 +198,62 @@ tendencias = function(conexion, que, donde, fecha, diarios = c(), categorias = c
   } }
   ]')
   
-  resultado = conexion$aggregate(query)
+  resultado = conexion_dlmr$frecuencias$aggregate(query)
   
   if (nrow(resultado) == 0) return(0)
   
   dresultado = data.table(palabra = names(resultado[1,2]), freq = as.numeric(resultado[1,2]))
   
   return(dresultado)
+}
+
+
+#' Recupera noticias filtrando segun algunos parametros.
+#'
+#' @param desde fecha desde
+#' @param hasta fecha hasta
+#' @param diarios diarios a buscar
+#' @param categorias categorias a buscar
+#' @param palabras_en_titulo palabras que deben aparecen en el titulo (pueden ser pedazos de palabras)
+#' @param palabras_en_texto palabras que deben aparecen en el texto (pueden ser pedazos de palabras)
+#' @import mongolite
+#' @import stringi
+#' @import data.table
+#' @export
+noticias = function(desde, hasta, diarios = c(), categorias = c(), palabras_en_titulo = c(), palabras_en_texto = c()) {
+  
+  if(exists('conexion_dlmr') == F) {
+    stop(paste0('NO existe una conexión abierta! Para inicar conexión llamar a "conectar()"'))
+  }
+  
+  if (desde > hasta) {
+    stop('La fecha "desde" debe ser menor o igual a la fecha "hasta".')
+  }
+  
+  desde = paste0(substr(desde,1,4),'-',substr(desde,5,6),'-',substr(desde,7,8),'T00:00:00.000Z')
+  hasta = paste0(substr(hasta,1,4),'-',substr(hasta,5,6),'-',substr(hasta,7,8),'T23:59:59.000Z')
+  
+  query_diario = paste0('"diario" : {"$in":[',stri_join(paste0('"',diarios,'"'), collapse = ','),']}')
+  query_categoria = paste0('"cat" : {"$in":[',stri_join(paste0('"',categorias,'"'), collapse = ','),']}')
+  query_fecha = paste0('"fecha" : {"$gte" : {"$date":"', desde,'"}, "$lte" : {"$date":"', hasta,'"}}')
+  
+  query_titulo = stri_join(paste0('"titulo":{"$regex":".*',palabras_en_titulo,'.*", "$options" : "i"}'), collapse = ',')
+  query_texto = stri_join(paste0('"texto":{"$regex":".*',palabras_en_texto,'.*", "$options" : "i"}'), collapse = ',')
+  
+  query_find = paste0('{', query_fecha)
+  
+  if (is.null(diarios) == F) query_find = paste0(query_find, ',', query_diario)
+  if (is.null(categorias) == F) query_find = paste0(query_find, ',', query_categoria)
+  if (is.null(palabras_en_titulo) == F) query_find = paste0(query_find, ',', query_titulo)
+  if (is.null(palabras_en_texto) == F) query_find = paste0(query_find, ',', query_texto)
+  
+  query = paste0(query_find, '}')
+  
+  noticias = conexion_dlmr$noticias$find(query)
+  
+  dnoticias = as.data.table(noticias)
+  
+  setnames(dnoticias, 'cat', 'categoria')
+  
+  return(dnoticias)
 }

@@ -4,19 +4,9 @@
 \alias{tendencias}
 \title{Busca 'personas', 'terminos' o 'verbos' en 'textos' o 'titulos' de la coleccion, filtrando segun algunos parametros.}
 \usage{
-tendencias(
-  conexion,
-  que,
-  donde,
-  fecha,
-  diarios = c(),
-  categorias = c(),
-  top = 10
-)
+tendencias(que, donde, fecha, diarios = c(), categorias = c(), top = 10)
 }
 \arguments{
-\item{conexion}{conexion a la coleccion 'frecuencias' ya instanciada}
-
 \item{que}{qué buscar? 'personas', 'terminos' o 'verbos'}
 
 \item{donde}{dónde buscar? 'textos' o 'titulos'}

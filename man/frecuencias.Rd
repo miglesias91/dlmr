@@ -5,7 +5,6 @@
 \title{Busca 'personas', 'terminos' o 'verbos' en 'textos' o 'titulos' de la coleccion, filtrando segun algunos parametros.}
 \usage{
 frecuencias(
-  conexion,
   que,
   donde,
   palabras,
@@ -18,8 +17,6 @@ frecuencias(
 )
 }
 \arguments{
-\item{conexion}{conexion a la coleccion 'frecuencias' ya instanciada}
-
 \item{que}{qué buscar? 'personas', 'terminos' o 'verbos'}
 
 \item{donde}{dónde buscar? 'textos' o 'titulos'}
