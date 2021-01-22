@@ -1,4 +1,4 @@
-# dlmr
+# dlmr (beta)
 ### Paquete R para hacer consultas a la base de [dlm](https://twitter.com/dicenlosmedios).
 
 Wrapper sobre [mongolite](https://github.com/jeroen/mongolite) para **simplificar** las consultas.
@@ -109,7 +109,7 @@ Consulta el top N de frecuencias en una determinada fecha, filtrando por diarios
                        categorias = c('economia', 'politica'),
                        palabras = c('Cristina'))
 ```
-### 3.3.
+### 4.3.
 > "recuperar las **tendencia** de los primeros `20` `términos` en los `títulos` de la categoría `sociedad`, del diario `Clarin`, de la fecha `2021-01-16`"
 ```
 > t = tendencias(que = 'terminos',
@@ -119,10 +119,3 @@ Consulta el top N de frecuencias en una determinada fecha, filtrando por diarios
                  categorias = c('sociedad'),
                  top = 20)
 ```
-
-- ***que***: "qué tipo de palabras buscar?" este paramétros puede ser '*personas*', '*terminos*' o '*verbos*'.
-- ***donde***: "dónde buscar las palabras?" este paramétros puede ser '*titulos*' o '*textos*'.
-- ***palabras***: "cuáles palabras buscar?" acá van las palabras que se quieren buscar. Apellido de una *persona*, o *término*, o verbo en *infinitivo*.
-- ***desde***: "desde qué fecha buscar?" fecha desde la cual se quiere recuperar las frecuencias, en formato 'YYYYMMDD'.
-- ***hasta***: "hasta qué fecha buscar?" fecha hastas la cual se quiere recuperar las frecuencias, en formato 'YYYYMMDD'.
-- 
