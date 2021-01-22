@@ -102,12 +102,12 @@ Consulta el top N de frecuencias en una determinada fecha, filtrando por diarios
 > "recuperar la **frecuencia** de la `persona` `'Cristina'` en `texto` , entre `2020-09-10` y `2020-09-12`, de los darios `Infobae` y `Página 12`, de las categorías `Internacional` y `Deporte`"
 ```
 > f = frecuencias(que = 'personas',
-                       donde = 'textos',
-                       desde = '20200910',
-                       hasta = '20200912',
-                       diarios = c('clarin', 'lanacion'),
-                       categorias = c('economia', 'politica'),
-                       palabras = c('Cristina'))
+                  donde = 'textos',
+                  desde = '20200910',
+                  hasta = '20200912',
+                  diarios = c('clarin', 'lanacion'),
+                  categorias = c('economia', 'politica'),
+                  palabras = c('Cristina'))
 ```
 ### 4.3.
 > "recuperar las **tendencia** de los primeros `20` `términos` en los `títulos` de la categoría `sociedad`, del diario `Clarin`, de la fecha `2021-01-16`"
