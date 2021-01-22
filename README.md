@@ -1,16 +1,16 @@
-# dlmr (beta)
+# dlmr 0.9 (*beta*)
 ### Paquete R para hacer consultas a la base de [dlm](https://twitter.com/dicenlosmedios).
 
-Wrapper sobre [mongolite](https://github.com/jeroen/mongolite) para **simplificar** las consultas.
+Wrapper sobre [mongolite](https://github.com/jeroen/mongolite) para ***simplificar*** las consultas.
 
 ---
-# ***Instalación***
+# ***Instalación vía consola de [`RStudio`](https://rstudio.com/))***
 
-0. Instalar [`devtools`](https://github.com/r-lib/devtools). Desde consola:
+0. Instalar [`devtools`](https://github.com/r-lib/devtools):
 ```
 > install.packages("devtools")
 ```
-1. Instalar [`dlmr`](https://github.com/miglesias91/dlmr). Desde consola:
+1. Instalar [`dlmr`](https://github.com/miglesias91/dlmr):
  ```
 > devtools::install_github("miglesias91/dlmr")
 ```
