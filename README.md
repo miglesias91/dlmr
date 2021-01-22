@@ -4,7 +4,7 @@
 Wrapper sobre [mongolite](https://github.com/jeroen/mongolite) para ***simplificar*** las consultas.
 
 ---
-# ***Instalación vía consola de [`RStudio`](https://rstudio.com/))***
+# ***Instalación vía consola de [`RStudio`](https://rstudio.com/)***
 
 0. Instalar [`devtools`](https://github.com/r-lib/devtools):
 ```
