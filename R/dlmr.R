@@ -116,6 +116,7 @@ frecuencias = function(que, donde, palabras, desde = '0', hasta = '99999999', di
   
   if(Sys.info()[1] == 'Windows') {
     dresultado = as.data.table(lapply(dresultado, iconv, from='utf-8', to='latin1'))
+    names(dresultado) = iconv(names(dresultado), from='utf-8', to='latin1')
   }
   
   columnas = c('fecha','diario','categoria','total', paste0(prefijo,'.', palabras))
