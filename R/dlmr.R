@@ -110,13 +110,13 @@ frecuencias = function(que, donde, palabras, desde = '0', hasta = '99999999', di
   
   resultado = conexion_dlmr$frecuencias$aggregate(query)
   
-  if(Sys.info()[1] == 'Windows') {
-    resultado = as.data.table(lapply(resultado, iconv, from='utf-8', to='latin1'))
-  }
-  
   if (nrow(resultado) == 0) return(0)
   
   dresultado = as.data.table(resultado)
+  
+  if(Sys.info()[1] == 'Windows') {
+    dresultado = as.data.table(lapply(dresultado, iconv, from='utf-8', to='latin1'))
+  }
   
   columnas = c('fecha','diario','categoria','total', paste0(prefijo,'.', palabras))
   
@@ -204,13 +204,13 @@ tendencias = function(que, donde, fecha, diarios = c(), categorias = c(), top = 
   
   resultado = conexion_dlmr$frecuencias$aggregate(query)
   
-  if(Sys.info()[1] == 'Windows') {
-    resultado = as.data.table(lapply(resultado, iconv, from='utf-8', to='latin1'))
-  }
-  
   if (nrow(resultado) == 0) return(0)
   
   dresultado = data.table(palabra = names(resultado[1,2]), freq = as.numeric(resultado[1,2]))
+  
+  if(Sys.info()[1] == 'Windows') {
+    dresultado = as.data.table(lapply(dresultado, iconv, from='utf-8', to='latin1'))
+  }
   
   return(dresultado)
 }
@@ -259,13 +259,13 @@ noticias = function(desde, hasta, diarios = c(), categorias = c(), palabras_en_t
   
   noticias = conexion_dlmr$noticias$find(query)
   
-  if(Sys.info()[1] == 'Windows') {
-    noticias = as.data.table(lapply(noticias, iconv, from='utf-8', to='latin1'))
-  }
-  
   dnoticias = as.data.table(noticias)
   
   setnames(dnoticias, 'cat', 'categoria')
+  
+  if(Sys.info()[1] == 'Windows') {
+    dnoticias = as.data.table(lapply(dnoticias, iconv, from='utf-8', to='latin1'))
+  }
   
   return(dnoticias)
 }
