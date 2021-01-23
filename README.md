@@ -45,14 +45,14 @@ Trae las noticas según los filtros.
 ### 2.2. *Contar noticias*
 Cuenta las noticas que coinciden con los filtros.
 ```
-> notis = contar(desde,
+> total = contar(desde,
                    hasta,
                    diarios = c(),
                    categorias = c(),
                    palabras_en_titulo = c(),
                    palabras_en_texto = c())
 ```
-Los parámetros son los **mismos** que en `dlmr::noticias()`.
+Devuelve *el número de noticias* que coinciden con filtros. Los parámetros son los **mismos** que en `dlmr::noticias()`.
 
 ### 2.3. *Frecuencias*
 Consulta las *veces que se mencióno* -*'frecuencia'*- una palabra en una determinada fecha, para los diarios y categorias indicadas. 
