@@ -42,7 +42,19 @@ Trae las noticas según los filtros.
 - ***palabras_en_titulo***: "*cuáles deben aparecer en el título?*" Pueden ser también *pedazos* de palabras. Matchea si aparecen **TODAS** las palabras.
 - ***palabras_en_texto***: "*cuáles deben aparecer en el texto?*" Pueden ser también *pedazos* de palabras. Matchea si aparecen **TODAS** las palabras.
 
-### 2.2. *Frecuencias*
+### 2.2. *Contar noticias*
+Cuenta las noticas que coinciden con los filtros.
+```
+> notis = contar(desde,
+                   hasta,
+                   diarios = c(),
+                   categorias = c(),
+                   palabras_en_titulo = c(),
+                   palabras_en_texto = c())
+```
+Los parámetros son los **mismos** que en `dlmr::noticias()`.
+
+### 2.3. *Frecuencias*
 Consulta las *veces que se mencióno* -*'frecuencia'*- una palabra en una determinada fecha, para los diarios y categorias indicadas. 
 ```
 > freqs = frecuencia(que,
@@ -65,7 +77,7 @@ Consulta las *veces que se mencióno* -*'frecuencia'*- una palabra en una determ
 - ***freq_min***: "*cuántas veces COMO MÍNIMO tiene que aparecer cada palabra?*"
 - ***freq_max***: "*cuántas veces COMO MÁXIMO tiene que aparecer cada palabra?*"
 
-### 2.3. *Tendencias*
+### 2.4. *Tendencias*
 Consulta el top N de frecuencias en una determinada fecha, filtrando por diarios y categorias. 
 ```
 > tends = tendencias(que,
