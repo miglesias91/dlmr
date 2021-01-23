@@ -114,6 +114,11 @@ frecuencias = function(que, donde, palabras, desde = '0', hasta = '99999999', di
   
   dresultado = as.data.table(resultado)
   
+  if(Sys.info()[1] == 'Windows') {
+    dresultado = as.data.table(lapply(dresultado, iconv, from='utf-8', to='latin1'))
+    names(dresultado) = iconv(names(dresultado), from='utf-8', to='latin1')
+  }
+  
   columnas = c('fecha','diario','categoria','total', paste0(prefijo,'.', palabras))
   
   dresultado = dresultado[, ..columnas]
@@ -204,6 +209,10 @@ tendencias = function(que, donde, fecha, diarios = c(), categorias = c(), top = 
   
   dresultado = data.table(palabra = names(resultado[1,2]), freq = as.numeric(resultado[1,2]))
   
+  if(Sys.info()[1] == 'Windows') {
+    dresultado = as.data.table(lapply(dresultado, iconv, from='utf-8', to='latin1'))
+  }
+  
   return(dresultado)
 }
 
@@ -254,6 +263,10 @@ noticias = function(desde, hasta, diarios = c(), categorias = c(), palabras_en_t
   dnoticias = as.data.table(noticias)
   
   setnames(dnoticias, 'cat', 'categoria')
+  
+  if(Sys.info()[1] == 'Windows') {
+    dnoticias = as.data.table(lapply(dnoticias, iconv, from='utf-8', to='latin1'))
+  }
   
   return(dnoticias)
 }
