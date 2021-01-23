@@ -270,3 +270,49 @@ noticias = function(desde, hasta, diarios = c(), categorias = c(), palabras_en_t
   
   return(dnoticias)
 }
+
+#' Cuenta noticias filtrando segun algunos parametros.
+#'
+#' @param desde fecha desde
+#' @param hasta fecha hasta
+#' @param diarios diarios a buscar
+#' @param categorias categorias a buscar
+#' @param palabras_en_titulo palabras que deben aparecen en el titulo (pueden ser pedazos de palabras)
+#' @param palabras_en_texto palabras que deben aparecen en el texto (pueden ser pedazos de palabras)
+#' @import mongolite
+#' @import stringi
+#' @import data.table
+#' @export
+contar = function(desde, hasta, diarios = c(), categorias = c(), palabras_en_titulo = c(), palabras_en_texto = c()) {
+  
+  if(exists('conexion_dlmr') == F) {
+    stop(paste0('NO existe una conexión abierta! Para inicar conexión llamar a "conectar()"'))
+  }
+  
+  if (desde > hasta) {
+    stop('La fecha "desde" debe ser menor o igual a la fecha "hasta".')
+  }
+  
+  desde = paste0(substr(desde,1,4),'-',substr(desde,5,6),'-',substr(desde,7,8),'T00:00:00.000Z')
+  hasta = paste0(substr(hasta,1,4),'-',substr(hasta,5,6),'-',substr(hasta,7,8),'T23:59:59.000Z')
+  
+  query_diario = paste0('"diario" : {"$in":[',stri_join(paste0('"',diarios,'"'), collapse = ','),']}')
+  query_categoria = paste0('"cat" : {"$in":[',stri_join(paste0('"',categorias,'"'), collapse = ','),']}')
+  query_fecha = paste0('"fecha" : {"$gte" : {"$date":"', desde,'"}, "$lte" : {"$date":"', hasta,'"}}')
+  
+  query_titulo = stri_join(paste0('"titulo":{"$regex":".*',palabras_en_titulo,'.*", "$options" : "i"}'), collapse = ',')
+  query_texto = stri_join(paste0('"texto":{"$regex":".*',palabras_en_texto,'.*", "$options" : "i"}'), collapse = ',')
+  
+  query_find = paste0('{', query_fecha)
+  
+  if (is.null(diarios) == F) query_find = paste0(query_find, ',', query_diario)
+  if (is.null(categorias) == F) query_find = paste0(query_find, ',', query_categoria)
+  if (is.null(palabras_en_titulo) == F) query_find = paste0(query_find, ',', query_titulo)
+  if (is.null(palabras_en_texto) == F) query_find = paste0(query_find, ',', query_texto)
+  
+  query = paste0(query_find, '}')
+  
+  total = conexion_dlmr$noticias$count(query)
+  
+  return(total)
+}
