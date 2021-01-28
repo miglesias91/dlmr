@@ -78,6 +78,10 @@ frecuencias = function(que, donde, palabras, desde = '0', hasta = '99999999', di
     stop('"donde" tiene que ser "textos" o "titulos".')
   }
   
+  if (desde > hasta) {
+    stop('La fecha "desde" debe ser menor o igual a la fecha "hasta".')
+  }
+  
   if (is.null(palabras))  {
     stop('"palabras" tiene que contener al menos una palabra a filtrar.')
   }
@@ -140,7 +144,7 @@ frecuencias = function(que, donde, palabras, desde = '0', hasta = '99999999', di
 #' @import stringi
 #' @import data.table
 #' @export
-tendencias = function(que, donde, fecha, diarios = c(), categorias = c(), top = 10) {
+tendencias = function(que, donde, desde, hasta, diarios = c(), categorias = c(), top = 10) {
   
   if(exists('conexion_dlmr') == F) {
     stop(paste0('NO existe una conexión abierta! Para inicar conexión llamar a "conectar()"'))
@@ -154,6 +158,10 @@ tendencias = function(que, donde, fecha, diarios = c(), categorias = c(), top = 
     stop('"donde" tiene que ser "textos" o "titulos".')
   }
   
+  if (desde > hasta) {
+    stop('La fecha "desde" debe ser menor o igual a la fecha "hasta".')
+  }
+  
   prefijo = ''
   if (que == 'personas' && donde == 'textos') prefijo = 'per_txt'
   if (que == 'personas' && donde == 'titulos') prefijo = 'per_tit'
@@ -164,7 +172,11 @@ tendencias = function(que, donde, fecha, diarios = c(), categorias = c(), top = 
   
   query_diario = paste0('"diario" : {"$in":[',stri_join(paste0('"',diarios,'"'), collapse = ','),']}')
   query_categoria = paste0('"categoria" : {"$in":[',stri_join(paste0('"',categorias,'"'), collapse = ','),']}')
-  query_fecha = paste0('"fecha" : "', fecha,'"')
+  
+  if (desde != hasta)
+    query_fecha = paste0('"fecha" : {"$gte" : "', desde,'", "$lte" : "', hasta,'"}')
+  else
+    query_fecha = paste0('"fecha" : "', desde,'"')
   
   query_match = paste0('"$match" : {', query_fecha)
   
@@ -173,7 +185,18 @@ tendencias = function(que, donde, fecha, diarios = c(), categorias = c(), top = 
   
   query_match = paste0(query_match, '}')
   
-  ids = c('$fecha')
+  query_addfields = paste0('"$addFields": { "lista_aux": {"$objectToArray": "$', prefijo,'"}')
+  if (desde != hasta)
+    query_addfields = paste0(query_addfields, ', "id_aux" : "aux"')
+  
+  query_addfields = paste0(query_addfields, '}')
+  
+  
+  if (desde != hasta)
+    ids = c('$id_aux')
+  else
+    ids = c('$fecha')
+  
   if (is.null(diarios) == F) ids = c(ids, '$diario')
   if (is.null(categorias) == F) ids = c(ids, '$categoria')
   
@@ -215,6 +238,7 @@ tendencias = function(que, donde, fecha, diarios = c(), categorias = c(), top = 
   
   return(dresultado)
 }
+
 
 
 #' Recupera noticias filtrando segun algunos parametros.

@@ -4,20 +4,20 @@
 \alias{tendencias}
 \title{Busca 'personas', 'terminos' o 'verbos' en 'textos' o 'titulos' de la coleccion, filtrando segun algunos parametros.}
 \usage{
-tendencias(que, donde, fecha, diarios = c(), categorias = c(), top = 10)
+tendencias(que, donde, desde, hasta, diarios = c(), categorias = c(), top = 10)
 }
 \arguments{
 \item{que}{qué buscar? 'personas', 'terminos' o 'verbos'}
 
 \item{donde}{dónde buscar? 'textos' o 'titulos'}
 
-\item{fecha}{fecha a medir tendencia}
-
 \item{diarios}{diarios a buscar}
 
 \item{categorias}{categorias a buscar}
 
 \item{top}{traer las N palabras mas mencionadas}
+
+\item{fecha}{fecha a medir tendencia}
 }
 \description{
 Busca 'personas', 'terminos' o 'verbos' en 'textos' o 'titulos' de la coleccion, filtrando segun algunos parametros.
