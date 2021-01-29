@@ -123,11 +123,13 @@ frecuencias = function(que, donde, palabras, desde = '0', hasta = '99999999', di
     names(dresultado) = iconv(names(dresultado), from='utf-8', to='latin1')
   }
   
-  columnas = c('fecha','diario','categoria','total', paste0(prefijo,'.', palabras))
+  palabras_sin_espacios = gsub(' ', '.', palabras)
+  
+  columnas = c('fecha','diario','categoria','total', paste0(prefijo,'.', palabras_sin_espacios))
   
   dresultado = dresultado[, ..columnas]
   
-  setnames(dresultado, c('total', paste0(prefijo,'.',palabras)), c('noticias',palabras))
+  setnames(dresultado, c('total', paste0(prefijo,'.',palabras_sin_espacios)), c('noticias',palabras))
   
   return(dresultado)
 }
