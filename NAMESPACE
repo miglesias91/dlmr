@@ -2,9 +2,13 @@
 
 export(conectar)
 export(contar)
+export(foto)
+export(foto_palabras)
 export(frecuencias)
+export(gglollipop)
 export(noticias)
 export(tendencias)
 import(data.table)
+import(ggplot2)
 import(mongolite)
 import(stringi)

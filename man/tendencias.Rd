@@ -7,7 +7,7 @@
 tendencias(que, donde, desde, hasta, diarios = c(), categorias = c(), top = 10)
 }
 \arguments{
-\item{que}{qué buscar? 'personas', 'terminos' o 'verbos'}
+\item{que}{qué buscar? 'personas', 'terminos' o 'verbos'. Puede ser 1, 2 o los 3.}
 
 \item{donde}{dónde buscar? 'textos' o 'titulos'}
 
