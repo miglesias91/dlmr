@@ -98,7 +98,7 @@ foto = function(diarios = c(), categorias = c(), desde = '00000000', hasta = '99
         dias = as.integer(difftime(as.Date(hasta, format='%Y%m%d'), as.Date(desde, format='%Y%m%d'), units = c('days'))) + 1
       }
 
-      dfoto = rbind(dfoto, list(diario, 'todo', desde, hasta, total, round(total/dias, 2)))
+      dfoto = rbind(dfoto, list(diario, 'todo', desde, hasta, total, round(total/dias, 5)))
 
       next
     }
@@ -123,11 +123,11 @@ foto = function(diarios = c(), categorias = c(), desde = '00000000', hasta = '99
       
       total = conexion_dlmr$frecuencias$aggregate(query)$total
       
-      dfoto = rbind(dfoto, list(diario, categoria, desde, hasta, total, round(total/dias,2)))
+      dfoto = rbind(dfoto, list(diario, categoria, desde, hasta, total, round(total/dias,5)))
     }
   }
   
-  return(dfoto)
+  return(dfoto[order(-total)])
 }
 
 
@@ -186,9 +186,9 @@ foto_palabras = function(que, donde, diarios = c(), categorias = c(), desde = '0
                          top = top_por_tendencia)
       
       if(por_categoria) {
-        t_y_p[,c('diario', 'categoria','por_noticia') := list(diario, 'todo', round(freq/total_noticias,2))]
+        t_y_p[,c('diario', 'categoria','por_noticia') := list(diario, 'todo', round(freq/total_noticias,5))]
       } else {
-        t_y_p[,c('diario', 'por_noticia') := list(diario, round(freq/total_noticias,2))]
+        t_y_p[,c('diario', 'por_noticia') := list(diario, round(freq/total_noticias,5))]
       }
       
       terminos_y_personas = rbind(terminos_y_personas, t_y_p)
@@ -219,7 +219,7 @@ foto_palabras = function(que, donde, diarios = c(), categorias = c(), desde = '0
                            categorias = c(categoria),
                            top = top_por_tendencia)
         
-        t_y_p[,c('diario', 'categoria','por_noticia') := list(diario, categoria, round(freq/total_noticias,2))]
+        t_y_p[,c('diario', 'categoria','por_noticia') := list(diario, categoria, round(freq/total_noticias,5))]
       }
     } else {
       total_noticias = contar(desde = desde,
@@ -235,7 +235,7 @@ foto_palabras = function(que, donde, diarios = c(), categorias = c(), desde = '0
                          diarios = c(diario),
                          top = top_por_tendencia)
       
-      t_y_p[,c('diario', 'por_noticia') := list(diario, round(freq/total_noticias,2))]
+      t_y_p[,c('diario', 'por_noticia') := list(diario, round(freq/total_noticias,5))]
     }
     terminos_y_personas = rbind(terminos_y_personas, t_y_p)
   }
@@ -537,4 +537,39 @@ contar = function(desde, hasta, diarios = c(), categorias = c(), palabras_en_tit
   total = conexion_dlmr$noticias$count(query)
   
   return(total)
+}
+
+#' Formatea la tabla según donde se quiera presentar
+#'
+#' @param tabla tabla a formatear
+#' @param para tipo de formato segun donde se quiera publicar
+#' @param cantidad_decimales cantidad de decimales a tomar. -1 para dejar la misma cantidad y que quede como numeric
+#' @import stringi
+#' @import data.table
+#' @export
+formatear = function(data, para = 'blog', cantidad_decimales = 2) {
+  if(para == 'blog') {
+    columnas = names(data)
+    for(columna in columnas) {
+      if (class(data[[columna]]) == 'numeric' && cantidad_decimales > 0) {
+        data[[columna]] = sprintf(paste0('%.',cantidad_decimales,'f'),data[[columna]])
+      }
+      if (columna == 'diario') {
+        data[get(columna) == 'lanacion', (columna) := 'La Nación']
+        data[get(columna) == 'infobae', (columna) := 'Infobae']
+        data[get(columna) == 'clarin', (columna) := 'Clarín']
+        data[get(columna) == 'diariodeleuco', (columna) := 'Le Doy Mi Palabra']
+        data[get(columna) == 'eldestape', (columna) := 'El Destape']
+        data[get(columna) == 'todonoticias', (columna) := 'TN']
+        data[get(columna) == 'popular', (columna) := 'Popular']
+        data[get(columna) == 'paginadoce', (columna) := 'Página 12']
+        data[get(columna) == 'telam', (columna) := 'Télam']
+        data[get(columna) == 'perfil', (columna) := 'Perfil']
+        data[get(columna) == 'ambito', (columna) := 'Ámbito']
+        data[get(columna) == 'casarosada', (columna) := 'Casa Rosada']
+      }
+    }
+  }
+  
+  return(data)
 }

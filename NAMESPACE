@@ -2,6 +2,7 @@
 
 export(conectar)
 export(contar)
+export(formatear)
 export(foto)
 export(foto_palabras)
 export(frecuencias)
