@@ -220,6 +220,7 @@ foto_palabras = function(que, donde, diarios = c(), categorias = c(), desde = '0
                            top = top_por_tendencia)
         
         t_y_p[,c('diario', 'categoria','por_noticia') := list(diario, categoria, round(freq/total_noticias,5))]
+        terminos_y_personas = rbind(terminos_y_personas, t_y_p)
       }
     } else {
       total_noticias = contar(desde = desde,
