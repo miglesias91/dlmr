@@ -185,6 +185,8 @@ foto_palabras = function(que, donde, diarios = c(), categorias = c(), desde = '0
                          diarios = c(diario),
                          top = top_por_tendencia)
       
+      if (is.numeric(t_y_p)) next
+      
       if(por_categoria) {
         t_y_p[,c('diario', 'categoria','por_noticia') := list(diario, 'todo', round(freq/total_noticias,5))]
       } else {
@@ -219,6 +221,8 @@ foto_palabras = function(que, donde, diarios = c(), categorias = c(), desde = '0
                            categorias = c(categoria),
                            top = top_por_tendencia)
         
+        if (is.numeric(t_y_p)) next
+        
         t_y_p[,c('diario', 'categoria','por_noticia') := list(diario, categoria, round(freq/total_noticias,5))]
         terminos_y_personas = rbind(terminos_y_personas, t_y_p)
       }
@@ -235,6 +239,8 @@ foto_palabras = function(que, donde, diarios = c(), categorias = c(), desde = '0
                          hasta = hasta,
                          diarios = c(diario),
                          top = top_por_tendencia)
+      
+      if (is.numeric(t_y_p)) next
       
       t_y_p[,c('diario', 'por_noticia') := list(diario, round(freq/total_noticias,5))]
     }
